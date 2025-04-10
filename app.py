@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import time 
 from datetime import datetime
+import os
 
 ts=time.time()
 date=datetime.fromtimestamp(ts).strftime("%d-%m-%Y")
@@ -22,7 +23,12 @@ elif count % 5 == 0:
 else:
     st.write(f"Count: {count}")
 
+attendance_path = f"Attendance/Attendance_{date}.csv"
 
-df=pd.read_csv("Attendance/Attendance_" + date + ".csv")
+if os.path.exists(attendance_path):
+    df = pd.read_csv(attendance_path)
+else:
+    st.warning(f"No attendance data found for {date}. Please ensure attendance has been recorded.")
+    df = pd.DataFrame(columns=["Name", "Time"])  # Or adjust columns as per your actual structure
 
 st.dataframe(df.style.highlight_max(axis=0))
